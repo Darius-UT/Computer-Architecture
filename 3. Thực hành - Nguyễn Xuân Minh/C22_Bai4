@@ -1,0 +1,82 @@
+	.data
+		str_input: .asciiz "Computer Architecture CSE-HCMUT"
+		str_nhap: .asciiz "Nhap ki tu: "
+		str_found: .asciiz "Tim thay tai vi tri:  "
+		str_notFound: .asciiz "Khong tim thay.\n"
+		str_bound: .asciiz "------------------------------\n"
+		str_enter: .asciiz "\n"
+		
+		char_target: .byte '\0'
+		int_index: .word 0
+	.text
+	.globl main
+# macro
+	.macro printInteger (%integer)
+		addi $v0, $zero, 1
+		move $a0, %integer
+		syscall
+	.end_macro
+	
+	.macro printString (%str)
+		addi $v0, $zero, 4
+		la $a0, %str
+		syscall
+	.end_macro
+	
+	.macro cinInteger (%int)
+		li $v0, 5
+		syscall 
+		sw $v0, %int
+	.end_macro
+	
+	.macro cinCharacter (%ch)
+		li $v0, 12
+		syscall 
+		sb $v0, %ch
+	.end_macro
+	
+	
+main:
+# Nhap
+	printString(str_nhap)
+	cinCharacter(char_target)
+	printString(str_enter)
+# Xu ly
+	la $s0, str_input
+	lb $s1, char_target
+	
+	li $t0, 0		# i = 0 ($t0)
+	add $t1, $s0, $t0 	# offset = arr + i ($t1)
+
+loop:	
+	lb $t2, 0($t1)		# character at 0(offset)
+	
+	beq $t2, $s1, end_loop
+	beq $t2, $zero, end_loop
+	
+	addi $t0, $t0, 1
+	add $t1, $s0, $t0
+	j loop
+	
+end_loop:
+	
+	bne $t2, $s1 , else
+	sw $t0, int_index
+	printString(str_found)
+	lw $t0, int_index 	# bat ngo chua ba gia:)))
+	printInteger($t0)
+	printString(str_enter)
+	j end_if
+	
+else:
+	printString(str_notFound)
+end_if:
+	
+	printString(str_bound)
+	j main
+
+# Xuat
+
+# Terminate
+	li $v0, 10
+	syscall

@@ -1,0 +1,90 @@
+	.data
+		str_cin_a: .asciiz "Nhap a: "
+		str_cin_b: .asciiz "Nhap b: " 
+		str_cin_c: .asciiz "Nhap c: " 
+		str_cin_d: .asciiz "Nhap d: " 
+		str_cin_x: .asciiz "Nhap x: " 
+		str_cout: .asciiz "f(a, b, c, d) = a.x^3 + b.x^2 + c.x + d = "
+		str_a: .asciiz "a = "
+		str_b: .asciiz "b = "
+		str_c: .asciiz "c = "
+		str_d: .asciiz "d = "
+		str_x: .asciiz "x = "
+		str_enter: .asciiz "\n"
+		
+		int_a: .word 0
+		int_b: .word 0
+		int_c: .word 0
+		int_d: .word 0
+		int_x: .word 0
+		int_f: .word 0
+		
+	.text
+	
+	.globl main
+	
+# Macro
+	.macro printString (%str)
+	li $v0, 4
+	la $a0, %str
+	syscall
+	.end_macro
+	
+	.macro printInteger (%intX)
+	li $v0, 1
+	lw $a0, %intX
+	syscall
+	.end_macro
+	
+	.macro getInteger
+	li $v0, 5
+	syscall
+	.end_macro
+	
+	.macro input_process (%strx, %intx)
+	printString(%strx)
+	getInteger()
+	sw $v0, %intx
+	.end_macro
+	
+	.macro checkValue (%strx, %intx)
+	printString(%strx) 
+	printInteger(%intx) 
+	printString(str_enter)
+	.end_macro
+
+main:
+	# Process
+	input_process(str_cin_a, int_a)
+	input_process(str_cin_b, int_b)
+	input_process(str_cin_c, int_c)
+	input_process(str_cin_d, int_d)
+	input_process(str_cin_x, int_x)
+	
+	lw $t0, int_a
+	lw $t1, int_x
+	mul $t0, $t0, $t1
+	lw $t2, int_b
+	add $t0, $t0, $t2
+	mul $t0, $t0, $t1
+	lw $t2, int_c
+	sub $t0, $t0, $t2
+	mul $t0, $t0, $t1
+	lw $t2, int_d
+	sub $t0, $t0, $t2
+	
+	sw $t0, int_f
+	
+	checkValue(str_a, int_a)
+	checkValue(str_b, int_b)
+	checkValue(str_c, int_c)
+	checkValue(str_d, int_d)
+	checkValue(str_x, int_x)
+	
+	
+	printString(str_cout)
+	printInteger(int_f)
+	
+	# Terminate
+	li $v0, 10
+	syscall

@@ -1,0 +1,31 @@
+.data
+	var_A: .byte 0xCA
+	var_B: .word 0xBEEF
+	var_C: .half 0xBAD0BABE
+	str_enter: .asciiz "\n"
+.text
+
+.globl main
+
+	.macro printString (%str)
+		li $v0, 4
+		la $a0, %str
+		syscall
+	.end_macro
+	
+	.macro printInteger (%int)
+		li $v0, 34
+		move $a0, %int
+		syscall
+	.end_macro
+
+main:
+	
+	 lw $t0, 30($s3) # load word 
+	 add $s1, $s2, $t0
+	
+	
+	printInteger($s0)
+	
+	li $v0, 10
+	syscall

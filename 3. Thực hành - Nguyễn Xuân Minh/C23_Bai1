@@ -1,0 +1,69 @@
+	.data
+		str_input: .asciiz "Dai hoc Bach Khoa DHQG Tp.HCM."
+		str_output: .asciiz "Do dai cua chuoi la: "
+		int_len: .word 0
+	.text
+	
+	.globl main
+	
+# macro:
+	.macro printInteger (%integer)
+		addi $v0, $zero, 1
+		move $a0, %integer
+		syscall
+	.end_macro
+	
+	.macro printString (%str)
+		addi $v0, $zero, 4
+		la $a0, %str
+		syscall
+	.end_macro
+	
+	.macro cinInteger (%int)
+		li $v0, 5
+		syscall 
+		sw $v0, %int
+	.end_macro
+	
+	.macro cinCharacter (%ch)
+		li $v0, 12
+		syscall 
+		sb $v0, %ch
+	.end_macro
+	
+
+main:
+# Nhap:
+	printString(str_input)
+# xu ly:
+	la $a0, str_input
+	
+	jal str_length
+	sw $v0, int_len
+# Xuat:
+	printString(str_output)
+	lw $t0, int_len
+	printInteger($t0)
+# Ket thuc:
+	li $v0, 10
+	syscall
+	
+	
+#------------------------------- information ----------------------------------
+# Ten ham: str_len
+# input: $a0 = address of str_input[0]
+#	$s0 = str_input[i]
+#	$s1 = i
+# output: $v0 = length of str_input
+#-----------------------------------------------------------------------------
+str_length:
+	addi $s1, $zero, 0
+	loop:
+		lb $s0, 0($a0)
+		beq $s0, $zero, end_loop
+		addi $s1, $s1, 1
+		addi $a0, $a0, 1
+		j loop
+	end_loop:
+		move $v0, $s1
+	jr $ra

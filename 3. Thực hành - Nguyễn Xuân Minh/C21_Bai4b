@@ -1,0 +1,44 @@
+	.data
+		str_input: .asciiz "2212629 - Nguyen Le Hoang Phuc"
+		str_end: .ascii "\0"
+		str_enter: .asciiz "\n"
+	.text
+	.globl main
+	
+# macro
+	.macro printString (%str)
+	li $v0, 4
+	la $a0, %str
+	syscall
+	.end_macro
+	
+main:
+	# process
+	printString(str_input)
+	printString(str_enter)	
+
+	la $t0, str_input
+	lb $t1, str_end
+	add $s0, $zero, $zero
+	
+loop:  
+	add $t2, $t0, $s0
+	lb $t3, 0($t2)
+	beq $t3, $t1, end
+	addi $s0, $s0, 1
+	j loop
+end:	
+	subi $s0, $s0, 1
+	
+	lb $t1, 0($t0)
+	add $t3, $t0, $s0
+	lb $t2, 0($t3)
+	
+	sb $t1, 0($t3)
+	sb $t2, 0($t0)
+	
+	printString(str_input)
+	
+	# terminate
+	addi $v0, $zero, 10
+	syscall

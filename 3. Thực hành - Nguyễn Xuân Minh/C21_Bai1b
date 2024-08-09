@@ -1,0 +1,66 @@
+# macro
+	.macro cinInteger
+	addi $v0, $zero, 5
+	syscall
+	.end_macro
+	
+	.macro coutInteger (%outInteger)
+	addi $v0, $zero, 1
+	lw $a0, %outInteger
+	syscall
+	.end_macro
+	
+	.macro coutString (%outString)
+	addi $v0, $zero, 4
+	la $a0, %outString
+	syscall
+	.end_macro
+	
+	.macro Nhap_Process (%str_cinX, %int_X)
+	coutString(%str_cinX)
+	cinInteger
+	sw $v0, %int_X
+	.end_macro
+	
+	.macro Terminate
+	addi $v0, $zero, 10
+	syscall
+	.end_macro
+	
+#///////////////////////////////////////////////////////////////////////////////////////////////
+	.data
+		int_a: .word 0
+		int_b: .word 0
+		int_c: .word 0
+		int_f: .word 0
+		
+		str_Cin_a: .asciiz "Cin A: "
+		str_Cin_b: .asciiz "Cin B: "
+		str_Cin_c: .asciiz "Cin C: "
+		str_Cout: .asciiz "f(a, b, c) = a - b + c = "
+	.text
+	.globl main
+
+main:
+	# Input 
+# Nhap a:
+	Nhap_Process(str_Cin_a, int_a)
+# Nhap b:
+	Nhap_Process(str_Cin_b, int_b)
+# Nhap c:
+	Nhap_Process(str_Cin_c, int_c)
+	
+ 	# Process
+ 	lw $s0, int_a
+ 	lw $s1, int_b
+ 	sub $s0, $s0, $s1
+ 	lw $s1, int_c
+ 	add $s0, $s0, $s1
+ 	sw $s0, int_f 
+ 	
+ 	# Output
+ 	coutString (str_Cout)
+ 	coutInteger (int_f)
+ 	
+ 	# Terminate Program
+ 	Terminate

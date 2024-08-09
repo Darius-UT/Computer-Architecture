@@ -1,0 +1,63 @@
+	.data 
+		myArr: 	.word 1, 4, 2, 26, 2, 8, 34, 43, 5, 2
+		int_index1: .word 0
+		int_index2: .word 0
+		str_dash: .asciiz " - "
+		str_equal: .asciiz " = "
+		str_input: .asciiz "Nhap index: "
+	.text
+	.globl main
+# macro
+	.macro printInteger (%integer)
+	addi $v0, $zero, 1
+	move $a0, %integer
+	syscall
+	.end_macro
+	
+	.macro printString (%str)
+	addi $v0, $zero, 4
+	la $a0, %str
+	syscall
+	.end_macro
+	
+	.macro cinIndex
+	li $v0, 5
+	syscall
+	.end_macro
+	
+main:
+	# Processs
+# Nhap index1
+	printString(str_input)
+	cinIndex
+	sw $v0, int_index1
+# Nhap index2
+	printString(str_input)
+	cinIndex
+	sw $v0, int_index2
+
+# main process
+	la $s0, myArr
+	
+	lw $t0, int_index1
+	mul $t0, $t0, 4
+	add $t0, $t0, $s0
+	lw $t3, 0($t0)
+	
+	lw $t0, int_index2
+	mul $t0, $t0, 4
+	add $t0, $t0, $s0
+	lw $t4, 0($t0)
+	
+	sub $s0, $t4, $t3
+	
+	# print
+	printInteger($t4)
+	printString(str_dash)
+	printInteger($t3)
+	printString(str_equal)
+	printInteger($s0)
+	
+	# Terminate
+	li $v0, 10
+	syscall

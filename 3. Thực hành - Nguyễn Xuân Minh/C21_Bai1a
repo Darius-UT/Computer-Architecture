@@ -1,0 +1,19 @@
+	.include "Macros"
+	
+	.data
+		stringVariable: .asciiz "Kien truc may tinh."
+	
+	.text
+	
+	.globl main
+
+main:
+	# Nhap
+	# Xu ly
+	# Xuat
+	add $v0, $zero, 4
+	la $a0, stringVariable
+	syscall
+	
+	# Ket thuc
+	Terminate_Program

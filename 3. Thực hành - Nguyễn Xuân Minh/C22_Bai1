@@ -1,0 +1,44 @@
+	.data
+		str_true: .asciiz "Computer Science and Engineering, HCMUT"
+		str_false: .asciiz "Computer Architecture 2022"
+		int_a: .word 0
+		str_in: .asciiz "Cin a: "
+	.text
+	.globl main
+# macro
+	.macro cinInteger
+	li $v0, 5
+	syscall
+	.end_macro
+	
+	.macro printString (%str)
+	li $v0, 4
+	la $a0, %str
+	syscall
+	.end_macro
+	
+	.macro printInteger (%i)
+		addi $v0, $zero, 1
+		add $a0, $zero, %i
+		syscall
+	.end_macro
+	
+main:
+	printString(str_in)
+	cinInteger
+	sw $v0, int_a
+	
+	lw $t0, int_a
+	addi $t1, $zero, 2
+	
+	div $t0, $t0, $t1
+	mfhi $t0
+	bne $t0, $zero, else
+	printString(str_true)
+	j end_if
+else: 
+	printString(str_false)
+end_if:
+	# terminate
+	li $v0, 10
+	syscall

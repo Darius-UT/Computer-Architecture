@@ -1,0 +1,68 @@
+	.data
+		int_a: .word 0
+		int_b: .word 1
+		int_c: .word 2
+		str_output: .asciiz "a = "
+	.text
+	.globl main
+# macro
+	.macro cinInteger
+	li $v0, 5
+	syscall
+	.end_macro
+	
+	.macro printString (%str)
+	li $v0, 4
+	la $a0, %str
+	syscall
+	.end_macro
+	
+	.macro printInteger (%integer)
+	addi $v0, $zero, 1
+	move $a0, %integer
+	syscall
+	.end_macro
+	
+main:
+# Nhap a:
+	cinInteger
+	sw $v0, int_a
+	
+# Process:
+	lw $t1, int_a
+	lw $t5, int_b
+	lw $t6, int_c
+
+# if_1 (a >= -3) <-> (a - (-3) >= 0)
+	addi $t2, $zero, -3
+	sub $t3, $t1, $t2
+	bltz $t3, else1
+# then1:
+	# if_2 (a <= 4) <-> (a - 4 <= 0)
+		addi $t2, $zero, 4
+		sub $t4, $t1, $t2
+		bgtz $t4, else1
+	# then2: (a = b - c)
+		sub $t1, $t5, $t6
+		j end_if1
+	# else2: (a = b + c)
+	else2:
+		# redundant
+	# end_if2
+	end_if2:
+		# redundant
+	
+# else1: (a = b + c)
+else1:	
+	add $t1, $t5, $t6
+
+# end_if1:
+end_if1:
+	sw $t1, int_a
+
+	printString(str_output)
+	printInteger($t1)
+	
+	# terminate
+	li $v0, 10
+	syscall

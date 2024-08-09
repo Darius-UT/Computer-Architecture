@@ -1,0 +1,33 @@
+	.data
+		str_out: .asciiz "Nhap chuoi: "
+		int_maxLength: .word 11
+		buffer_res: .space 11
+		str_enter: .asciiz "\n"
+	.text
+	.globl mainFunction
+
+mainFunction:
+# macro
+	.macro Terminate
+	add $v0, $zero, 10
+	syscall
+	.end_macro
+	
+	.macro printString (%string)
+	add $v0, $zero, 4
+	la $a0, %string
+	syscall
+	.end_macro
+
+# Process
+	printString(str_out)
+	add $v0, $zero, 8
+	la $a0, buffer_res
+	lw $a1, int_maxLength
+	syscall
+	
+	printString(buffer_res)
+	printString(str_enter)
+	
+	# Terminate
+	Terminate

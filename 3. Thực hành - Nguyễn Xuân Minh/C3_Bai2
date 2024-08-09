@@ -1,0 +1,88 @@
+	.data
+		float_r: .float 0
+		float_so2:  .float 2
+		float_pi: .float 3.141592
+		float_chuvi: .float 0
+		float_dientich: .float 0
+		
+		str_nhapR: .asciiz "Nhap r: "
+		str_xuatChuvi: .asciiz "Chu vi =  "
+		str_xuatDientich: .asciiz "Dien tich = "
+		str_enter: .asciiz "\n"
+	.text
+	.globl main
+	
+# macro:
+	.macro printInteger (%integer)
+		addi $v0, $zero, 1
+		move $a0, %integer
+		syscall
+	.end_macro
+	
+	.macro printString (%str)
+		addi $v0, $zero, 4
+		la $a0, %str
+		syscall
+	.end_macro
+	
+	.macro cinInteger (%int)
+		li $v0, 5
+		syscall 
+		sw $v0, %int
+	.end_macro
+	
+	.macro cinCharacter (%ch)
+		li $v0, 12
+		syscall 
+		sb $v0, %ch
+	.end_macro
+	
+	.macro printFloat (%f)
+		li $v0, 2
+		lwc1 $f12, %f
+		syscall
+	.end_macro
+		
+	.macro cinFloat (%f)
+		li $v0, 6
+		syscall 
+		swc1 $f0, %f
+	.end_macro
+	
+main:
+# Nhap
+	printString(str_nhapR)
+	cinFloat(float_r)
+	
+# Xu ly
+	# f0 = 2 / Chuvi / Dien tich
+	# f1 = pi
+	# f2 = r
+	
+	lwc1 $f0, float_so2
+	lwc1 $f1, float_pi
+	lwc1 $f2, float_r
+	
+# Chuvi = 2 * pi *r :
+	mul.s $f0, $f0, $f1
+	mul.s $f0, $f0, $f2
+	
+	swc1 $f0, float_chuvi
+	
+# Dien tich = pi * r * r :
+	mul.s $f0, $f1, $f2
+	mul.s $f0, $f0, $f2
+	
+	swc1 $f0, float_dientich
+
+# Xuat
+	printString(str_xuatChuvi)
+	printFloat(float_chuvi)
+	
+	printString(str_enter)
+	
+	printString(str_xuatDientich)
+	printFloat(float_dientich)
+# Ket thuc
+	li $v0, 10
+	syscall
