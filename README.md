@@ -1,4 +1,4 @@
-#TÀI LIỆU MÔN HỌC KIẾN TRÚC MÁY TÍNH
+# TÀI LIỆU MÔN HỌC KIẾN TRÚC MÁY TÍNH
 
 ## Thông tin
  - Học kỳ: 231 - HCMUT
